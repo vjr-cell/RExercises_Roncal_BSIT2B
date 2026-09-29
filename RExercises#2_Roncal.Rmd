@@ -1,0 +1,141 @@
+---
+title: 'Lab Activity: Arithmetic Operations & Basic Data Types in R'
+author: "Vanessa J. Roncal"
+date: "2026-09-29"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+###Part A — Arithmetic Operations
+```{r}
+#TODO1
+a <- 17
+b <- 5
+sum <-a + b
+diff <-a - b
+product <-a * b
+quotient <-a / b
+
+sum
+diff
+product
+quotient
+
+#TODO2
+
+a <- 17
+b <- 5
+
+remainder <- a%%b
+integ_div <- a%/%b
+
+remainder
+integ_div
+
+#TODO3
+
+power <- 2^10
+power
+
+
+```
+Question #1 Run 17 / 5, 17 %% 5, and 17 %/% 5 side by side. In your own words, explain how these three results relate to each other mathematically.
+
+Answer #1: These 3 are related to each other in a way that all of them uses a basic arithmetic logical operations that is division. But they are differ in terms of the results because in using an modulus, you can get a results for remainders, while, integer division, your results as a whole number of integer(without a decimals). And division provide a specific reuslts.
+
+Question #2: Predict the output of 10 %% 3 and 10 %/% 3 before running the code. Were you correct? If not, explain what you misunderstood.
+
+Answer #1: Yes I correctly predict it. Because it was already discussed before.
+
+##Part B — Basic Data Types: typeof(), class(), and mode()
+```{r}
+x <- 42
+y <- 42L
+z <- "42"
+w <- TRUE
+v <- 3 + 3i
+typeof(x)
+typeof(y)
+typeof(z)
+typeof(w)
+typeof(v)
+
+class(x)
+class(y)
+class(z)
+class(w)
+class(v)
+
+mode(x)
+mode(y)
+mode(z)
+mode(w)
+mode(v)
+
+```
+Question #3): x <- 42 and y <- 42L look almost identical, but typeof(x) and typeof(y) give different answers. Explain the difference in your own words.
+
+Answer #3: With the "L", it is suffix that specifies the integer. That's why the result is "integer". And with no "L" it will be a "Double".
+
+
+Question #4: Is typeof() ever different from class() and from mode() for the same object? Look at your results above and explain any case where this happens (or, if you did not see one, explain what you would expect for a matrix or factor).
+
+Answer #4: typeof(), class(), and mode() give different results for most  of them
+
+####Part C — Type Conversion (20 min)
+
+
+```{r}
+num_string <- "123"
+as.numeric(num_string)
+typeof(num_string)
+class(num_string)
+mode(num_string)
+
+num <- c(0,1)
+as.logical(num)
+as.logical(2)
+as.logical(-1)
+
+bad_string <- "hello123"
+as.numeric(bad_string)
+```
+
+Question #5: When you ran the conversion-fail chunk, R produced NA and a warning instead of stopping with an error.
+
+Why do you think R is designed to give a warning here rather than crashing the whole script?
+
+ANSWER: For us not to rewrite the code.
+
+
+
+What are the risks of this behavior if you don’t read your warnings?
+
+
+ANSWER: You will be forever stucked in your code and you won't be able to solve the problem.
+
+
+
+Question #6: as.logical(0) and as.logical(1) convert to FALSE and TRUE.
+
+What do you think as.logical(2) and as.logical(-1)` will produce?
+
+ANSWER: as.logical(-1)  resulted a TRUE
+as.logical(2) resulted also a TRUE
+
+####Part D — Strings, paste(), and paste0()
+```{r}
+first_name <- "Juan"
+last_name <- "Dela Cruz"
+age_21 <-21
+
+cat(first_name, last_name)
+paste(first_name, last_name)
+paste0(first_name, last_name)
+paste(first_name,last_name)
+paste0()
+```
+
