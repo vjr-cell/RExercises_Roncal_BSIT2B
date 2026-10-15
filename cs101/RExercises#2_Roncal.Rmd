@@ -1,0 +1,166 @@
+---
+title: 'Lab Activity: Arithmetic Operations & Basic Data Types in R'
+author: "Vanessa J. Roncal"
+date: "2026-09-29"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+###Part A — Arithmetic Operations
+```{r}
+#TODO1
+a <- 17
+b <- 5
+sum <-a + b
+diff <-a - b
+product <-a * b
+quotient <-a / b
+
+sum
+diff
+product
+quotient
+
+#TODO2
+
+a <- 17
+b <- 5
+
+remainder <- a%%b
+integ_div <- a%/%b
+
+remainder
+integ_div
+
+#TODO3
+
+power <- 2^10
+power
+
+
+```
+**Question #1:** Run 17 / 5, 17 %% 5, and 17 %/% 5 side by side. In your own words, explain how these three results relate to each other mathematically.
+
+**Answer #1:** 17 / 5 gives the full decimal answer ($3.4$). 17 %/% 5 gives the whole number quotient ($3$), and 17 %% 5 gives the leftover remainder ($2$). They relate by the formula: $\text{Dividend} = (\text{Quotient} \times \text{Divisor}) + \text{Remainder}$, or $17 = (3 \times 5) + 2$.
+
+**Question #2:** Predict the output of 10 %% 3 and 10 %/% 3 before running the code. Were you correct? If not, explain what you misunderstood.
+
+**Answer #2:** I predicted 10 %% 3 would output 1 and 10 %/% 3 would output 3. My prediction was correct because $3$ goes into $10$ three times ($3 \times 3 = 9$) with $1$ left over.
+
+##Part B — Basic Data Types: typeof(), class(), and mode()
+```{r}
+x <- 42
+y <- 42L
+z <- "42"
+w <- TRUE
+v <- 3 + 3i
+typeof(x)
+typeof(y)
+typeof(z)
+typeof(w)
+typeof(v)
+
+class(x)
+class(y)
+class(z)
+class(w)
+class(v)
+
+mode(x)
+mode(y)
+mode(z)
+mode(w)
+mode(v)
+
+```
+**Question #3:** x <- 42 and y <- 42L look almost identical, but typeof(x) and typeof(y) give different answers. Explain the difference in your own words.
+
+**Answer #3:** With the "L", it is suffix that specifies the integer. That's why the result is "integer". And with no "L" it will be a "Double". Any plain number entered without a suffix is stored by default as a floating-point decimal (a double), which is why typeof(x) returns "double". Appending the L suffix explicitly instructs R to store the value as an integer in memory, which is why typeof(y) returns "integer".
+
+**Question #4:** Is typeof() ever different from class() and from mode() for the same object? Look at your results above and explain any case where this happens (or, if you did not see one, explain what you would expect for a matrix or factor).
+
+**Answer #4:** Yes. For x <- 42, typeof() is "double" while class() and mode() are "numeric". For y <- 42L, mode() reports "numeric" while typeof() and class() report "integer". For complex structures like a factor, typeof() returns "integer" while class() returns "factor".
+
+####Part C — Type Conversion (20 min)
+```{r}
+num_string <- "123"
+as.numeric(num_string)
+typeof(num_string)
+class(num_string)
+mode(num_string)
+
+num <- c(0,1)
+as.logical(num)
+as.logical(2)
+as.logical(-1)
+
+bad_string <- "hello123"
+as.numeric(bad_string)
+```
+**Question #5:** 
+
+**A** When you ran the conversion-fail chunk, R produced NA and a warning instead of stopping with an error. Why do you think R is designed to give a warning here rather than crashing the whole script?
+
+**Answer #5:** For us not to rewrite the code. R gives a warning instead of crashing so that large datasets can keep processing even if a few values are invalid.
+
+**B**What are the risks of this behavior if you don’t read your warnings?
+
+**Answer #5:** Ignoring warnings risks letting hidden NA values mess up your remaining calculations without you realizing it. We will be forever stucked in your code and you won't be able to solve the problem.
+
+**Question #6:** 
+
+**A**as.logical(0) and as.logical(1) convert to FALSE and TRUE. 
+
+**Answer #6A:** as.logical(-1)  resulted a TRUE as.logical(2) resulted also a TRUE
+
+**B**What do you think as.logical(2) and as.logical(-1)` will produce?
+
+**answer #6B:**
+They both return TRUE. R's rule is that 0 converts to FALSE, and any non-zero number converts to TRUE.
+
+####Part D — Strings, paste(), and paste0()
+```{r}
+first_name <- "Juan"
+last_name <- "Dela Cruz"
+age_21 <-21
+
+cat(first_name, last_name)
+paste(first_name, last_name)
+paste0(first_name, last_name)
+
+paste(first_name, last_name, sep = "-")
+age <- 21
+full_name <- paste(first_name, last_name)
+paste0(full_name, " is ", age, " years old.")
+```
+**Question #7:** paste() and paste0() produced different results for the same two strings. Explain exactly why, referencing what each function does by default.
+
+**Answer #7:** paste() automatically adds a space between items (sep = " "), while paste0() joins them with no space at all (sep = "").
+
+**Question #8:** In the strings-numbers chunk, you combined a character string with a numeric variable (age) using paste0() without first converting age to a string.
+Did this cause an error? Explain what paste0() does internally to make this work, and how it relates to the type conversions you practiced in Part C.
+
+**Answer #8:** No error occurred. paste0() automatically converts non-string inputs like age into characters behind the scenes (equivalent to running as.character(age)).
+
+```{r}
+#"5" + 5
+as.numeric("5") + 5
+```
+**Question #9:** Some programming languages automatically convert "5" + 5 into 10 without an error. R does not.
+Based on what you’ve learned about R’s data types in this lab, why do you think R requires an explicit conversion instead of guessing what the programmer meant?
+
+**Answer #9** R requires explicit conversion to prevent accidental errors in statistical math. It avoids guessing whether "5" + 5 means math ($10$) or text combining ("55"), forcing the programmer to state their intention clearly.
+
+**Question #10:** Suppose a classmate writes a script that reads a column of “numbers” from a text file. The column looks numeric, but when they try sum() on it, R throws an error. Based on everything in this lab (types, typeof()/class()/mode(), conversion, warnings), write a short paragraph explaining what likely went wrong and the steps you’d take to diagnose and fix it.
+
+**Answer #10:** The column was likely imported as text instead of numbers because of formatting or extra non-numeric characters. To fix it, check the type with class(), clean out any non-numeric symbols, convert the column using as.numeric(), and re-run sum(). 
+
+**Conclusion**
+In 3–4 sentences, summarize what you learned about how R handles different data types, and why understanding typeof()/class() and conversion functions matters before doing arithmetic or combining data.
+
+**Answer**
+R uses specific data types like double, integer, character, and logical, each suited for different tasks. Checking types with class() or typeof() helps prevent runtime errors before performing calculations. Understanding explicit conversions ensures data is formatted correctly so functions like sum() work as expected.
+
