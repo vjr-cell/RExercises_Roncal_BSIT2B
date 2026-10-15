@@ -164,3 +164,5 @@ In 3–4 sentences, summarize what you learned about how R handles different dat
 **Answer**
 R uses specific data types like double, integer, character, and logical, each suited for different tasks. Checking types with class() or typeof() helps prevent runtime errors before performing calculations. Understanding explicit conversions ensures data is formatted correctly so functions like sum() work as expected.
 
+ 
+ 
