@@ -1,0 +1,172 @@
+---
+title: "R Lab: Basic Operations - sort(), rank(), and order()"
+author: "Vanessa Roncal"
+date: "2026-11-04"
+output: html_document
+---
+ 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+**PART A- Creating Data Frames**
+
+**Question 1**
+
+```{r}
+#a
+scores <- c(Ana=78, Ben=92, Cid=85, Dex=92, Eli=67, Fay=88, Gio=74)
+scores
+
+#b
+sort_ascending <- sort(scores)
+sort_descending <- sort(scores, decreasing=TRUE)
+
+#c
+sort_ascending
+
+#d
+subjects <- c("Science", "Math", "English", "Filipino", "PE") 
+incomplete <- c(85, NA, 90, 70, NA, 95)
+
+#e
+sort(subjects)
+
+#f
+sort(incomplete)
+sort(incomplete, na.last=TRUE)
+
+```
+
+**Question #2:**
+
+When you sorted scores, did the names stay correctly attached to their original values?
+Explain why this matters: if you were sorting exam scores to find the top performer, what would go wrong if the names did NOT follow their values?
+
+**Answer #2:**
+
+Yes, the names remained attached to the scores after sorting.
+This is very important because if the names did not follow the scores, the student grades would get mixed up. For example, the highest score of 92 might get assigned to whoever is first alphabetically instead of Ben or Dex, which gives the wrong person credit for the top score.
+
+**Question #3:**
+
+By default, sort() silently removes NA values instead of showing them or throwing an error.
+Why might this default behavior be dangerous if you were reporting “the lowest score” in a dataset with missing data, without first checking for NA values?
+
+**Answer #3:**
+
+Removing NAs automatically can be dangerous because it hides missing data. If a student missed an exam or their grade was not entered, R just drop it and looks at the remaining numbers. So if you ask for the "lowest score", you might get a 67 as the lowest score/grade, when in reality there were missing score(NA) that could be equal to a score of 0.
+
+```{r}
+#QUESTION #4
+# Compare to sort(scores) to order(scores)
+
+sort(scores)
+order(scores)
+scores[order(scores)]
+```
+
+**Question #4a:**
+
+Use order(scores) and print the result. Compare this output to the sort(scores) output. What is the difference?
+
+**Answer #4a:**
+
+sort(scores) gives you an actual numerical scores arranged from highest to lowest. While, order(scores) gives you the position number(where is highest and lowest) of where those values were in the original vector.
+
+**Question #4b:**
+
+Use the result of order(scores) to index scores itself: # Compare this to sort(scores) – they should produce the same values.
+Do they have the same values? Explain briefly.
+
+**Answer #4b:**
+
+Yes, they give the exact same values when a indexing scores[order(scores)] to sort(scores). R grab the elements using that order of positions, which ends up sorting them out anyway.
+
+**Question #5:**
+
+```{r}
+students <- data.frame(
+name = c("Ana", "Ben", "Cid", "Dex", "Eli", "Fay", "Gio"), 
+score = c(78, 92, 85, 92, 67, 88, 74), 
+section = c("A", "B", "A", "B", "A", "B", "A")
+)
+students
+
+#a.
+
+students[order(students$score), ]
+
+#b. 
+
+students[order(students$score, decreasing = TRUE), ]
+
+```
+
+**Question #6:**
+
+sort(scores) and scores[order(scores)] produce the same final values, but they work completely differently under the hood.
+
+In your own words, explain what order(scores) actually returns (look at the raw numbers it gives you), and why that output is useless on its own unless you use it to index something.
+
+**Answer #6:**
+
+order(scores) just outputs a list of index numbers, like 5 7 1 3 6 2 4. It does not tell you what the actual scores or names are, it just tells which row/position to look at first, second, third, and so on. Without indexing or putting it on a [], it's just a random looking numbers that don't give you an actual dataset.
+
+**Question #7:**
+
+Explain why sort() alone could NOT have been used to reorder the whole students data frame by score (try to imagine running sort(students) and think about what “sorting a table” would even mean).
+
+Why is order() the correct tool whenever you need to keep multiple related columns lined up with each other?
+
+**Answer #7:**
+
+sort() only works on one vector at a time. If you try to run sort(students) on a whole dataframe, R won't know which column you want to sort by, and it can't sort an entire table directly without breaking the rows apart.
+
+order() is the right tool because it returns the row index sequence based on a specific column. When you put that index sequence in the row position of df[order(...), ], R moves the whole rows together so all the columns stay properly aligned.
+
+**Question #8:**
+
+#PART A
+
+```{r}
+cbind(scores = scores, rank = rank(scores))
+```
+**Answer #8:**
+
+**a.** What rank did each of them receive?
+
+Ben and Dex both got a rank of 6.5
+
+**b.** Ben and Dex both scored 92, the highest score in the class, but under the default rank() they did NOT both simply get rank “1” or rank “7” as a whole number. Explain exactly what value they received by default and why R computes it that way for tied values.
+
+Ben and Dex are tied for the highest score (92), which takes up positions 6 and 7 in the sorted order. Since R defaults to averaging tied ranks (ties.method = "average"), it adds 6 and 7 together and divides by 2 to give both of them 6.5.
+
+#PART B
+
+```{r}
+#A.
+sales <- data.frame( 
+   employee = c("Rey", "Sam", "Tin", "Uma", "Val"), 
+  units_sold = c(120, 145, 145, 98, 130)
+)
+sales$rank <- rank(-sales$units_sold)
+sales
+#B
+sales_sorted <- sales[order(sales$units_sold, decreasing = TRUE), ]
+sales_sorted
+```
+
+**Question #9:**
+
+In this challenge, you used rank() to determine standing and order() to determine display order.
+
+Could you have used order() alone to solve the entire problem (both awarding ranks AND reordering the table)?
+
+Explain what order() is missing that rank() provides, using your own words rather than repeating the definitions
+
+**Answer #9:**
+
+No, order() alone is not enough t complete both parts of the problem.
+
+order() just rearranges the row order for displaying the output, but it does not calculate actual rank values. rank() is needed because it looks at the values relative to each other and assigns actual tie-breaker ranks(like 6.5 for tied top sellers and 6.5 for Dex and Ben), which order() can't generate on its own.
