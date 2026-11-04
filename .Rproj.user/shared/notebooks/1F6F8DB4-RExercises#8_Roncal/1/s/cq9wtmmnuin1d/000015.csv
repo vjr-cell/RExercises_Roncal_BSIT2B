@@ -1,4 +1,0 @@
-"0",""
-"0","#b. "
-"0",""
-"0","students[order(students$score, decreasing = TRUE), ]"

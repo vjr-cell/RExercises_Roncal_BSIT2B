@@ -1,6 +1,0 @@
-"0","students <- data.frame("
-"0","name = c(""Ana"", ""Ben"", ""Cid"", ""Dex"", ""Eli"", ""Fay"", ""Gio""), "
-"0","score = c(78, 92, 85, 92, 67, 88, 74), "
-"0","section = c(""A"", ""B"", ""A"", ""B"", ""A"", ""B"", ""A"")"
-"0",")"
-"0","students"
