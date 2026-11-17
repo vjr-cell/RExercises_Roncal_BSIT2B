@@ -1,0 +1,158 @@
+---
+title: 'Data Structure - Data Frames'
+author: "Vanessa Roncal"
+date: "2026-11-05"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+**Part A - Creating Data Frames**
+
+**Answer for Question #1**
+
+```{r}
+Respondent <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+                11, 12, 13, 14, 15, 16, 17, 18, 19, 20)
+
+Sex <- c(2, 2, 1, 2, 2, 2, 2, 2, 2, 2,
+         1, 2, 2, 2, 2, 2, 2, 2, 1, 2)
+
+FathersOccupation <- c(1, 3, 3, 3, 1, 2, 3, 1, 1, 1,
+                       3, 2, 1, 3, 3, 1, 3, 1, 2, 1)
+
+PersonsAtHome <- c(5, 7, 3, 8, 5, 9, 6, 7, 8, 4,
+                   7, 5, 4, 7, 8, 8, 3, 11, 7, 6)
+
+SiblingsAtSchool <- c(6, 4, 4, 1, 2, 1, 5, 3, 1, 2,
+                      3, 2, 5, 5, 2, 1, 2, 5, 3, 2)
+
+TypesOfHouses <- c(1, 2, 3, 1, 1, 3, 3, 1, 2, 3,
+                   2, 3, 2, 2, 3, 3, 3, 3, 3, 2)
+
+length(Respondent)
+length(Sex)
+length(FathersOccupation)
+length(PersonsAtHome)
+length(SiblingsAtSchool)
+length(TypesOfHouses)
+
+
+```
+
+```{r}
+survey <- data.frame(
+  Respondent,
+  Sex,
+  FathersOccupation,
+  PersonsAtHome,
+  SiblingsAtSchool,
+  TypesOfHouses
+)
+print(survey)
+
+```
+
+```{r}
+str(survey)
+summary(survey)
+
+```
+
+```{r}
+dim(survey)
+nrow(survey)
+ncol(survey)
+
+
+```
+
+The data frame contains 20 rows and 6 columns, representing 20 respondents and their six recorded variables.
+
+
+```{r}
+survey$Sex <- factor(survey$Sex,
+                     levels = c(1, 2),
+                     labels = c("Male", "Female"))
+
+survey$FathersOccupation <- factor(survey$FathersOccupation,
+                                   levels = c(1, 2, 3),
+                                   labels = c("Farmer", "Driver", "Others"))
+
+survey$TypesOfHouses <- factor(survey$TypesOfHouses,
+                               levels = c(1, 2, 3),
+                               labels = c("Wood", "Semi-Concrete", "Concrete"))
+
+str(survey)
+
+
+```
+
+```{r}
+colMeans(survey[sapply(survey, is.numeric)])
+
+
+```
+
+```{r}
+survey[1:5, ]
+
+
+```
+
+
+The output displays the first five respondents and all six columns of the data frame.
+
+
+```{r}
+types_houses <- survey$TypesOfHouses
+
+print(types_houses)
+
+
+```
+
+```{r}
+subset(survey, Sex == "Male" & FathersOccupation == "Farmer")
+
+```
+
+```{r}
+subset(survey, Sex == "Female" & SiblingsAtSchool >= 5)
+
+```
+
+**Answer for Question #2**
+
+Checking the length of six vectors is important  to make sure that each column has the same number of observations. Since the data represents the same 20 respondents, every answer must have the same correct respondent. This prevents missing or mismatched information in the data frame.
+
+**Answer for Question #3**
+
+Sex, Father's Occupation, and Types of Houses are nominal data because their numbers represent categories or labels. Meanwhile, PersonsAtHome and SiblingsAtSchool are actual counts because they represent the number of people in a household and the number of siblings attending school. Calculating the average categories like Sex would be misleading because the numbers only represent labels and do not have mathematical meaning.
+
+**Answer for Question #4**
+
+Someone unfamiliar or no prioir knowledge about legend think that 1 represents a quantity or ranking instead of a category. However, according to the legend, 1 means Male and 2 means Female. This shows that working with coded data without proper labels can cause confusion and misunderstanding.
+
+**Answerr for Question #5**
+
+{r}
+male_respondents <- subset(survey, Sex == "Male")
+
+nrow(male_respondents)
+
+
+Out of 20 respondents, only 3 are male. This small sample size makes it difficult to generalize the results to a larger population because it may not represent the characteristics of the entire population.
+
+
+**Answer for Question #6**
+
+R does not automatically recognize these columns as categories because they are stored as numeric values. It treats them as numbers and calculates statistics such as mean, minimum, and maximum. This shows that the way data is stored is different from its actual meaning. We need to convert categorical variables into factors so R can recognize them as categories.
+
+**Answer for Question #7**
+
+The mean of PersonsAtHome is 6.40, while the mean of Sex is 1.85. The mean of PersonsAtHome is meaningful because it represents the average number of people living in each household. However, the mean of Sex is not meaningful because the numbers 1 and 2 only represent Male and Female, not actual quantities.
+
