@@ -1,0 +1,352 @@
+---
+title: 'R Lab: Conditional Statements in R'
+author: "Vanessa Roncal"
+date: "2026-11-26"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+**Part A — Examples of Conditional Statements**
+
+**Example A**
+```{r}
+score <- 74
+
+if (score >= 75) {
+  print("Passed")
+} else {
+  print("Failed")
+}
+
+```
+
+**Example b**
+```{r}
+score <- 91
+
+if (score >= 90) {
+  print("Excellent")
+} else if (score >= 80) {
+  print("Good")
+} else if (score >= 75) {
+  print("Fair")
+} else {
+  print("Needs Improvement")
+}
+
+```
+
+**Example c**
+```{r}
+scores <- c(92, 68, 75, 81, 59)
+ifelse(scores >= 75, "Passed", "Failed")
+
+```
+
+**Example d**
+```{r}
+grade <- 91
+attendance <- 95
+
+if (grade >= 90 & attendance >= 90) {
+  print("Honors candidate")
+}
+
+```
+
+
+**Part B — Conditional Statements**
+
+**Question #1**
+
+```{r}
+temp <- 33
+if (temp >= 32) {
+  print("Hot")
+} else {
+  print("Not hot")
+}
+```
+
+**Question #2**
+
+```{r}
+age <- 17
+if (age < 13) {
+  print("Child")
+} else if (age <= 19) {
+  print("Teenager")
+} else {
+  print("Adult")
+}
+```
+
+**Question #3**
+
+```{r}
+marks <- c(45, 88, 73, 100, 62)
+result <- ifelse(marks >= 60, "Pass", "Fail")
+print(result)
+```
+
+**Question #4**
+
+```{r}
+x <- 10
+if (x > 5) {
+  print("A")
+} else if (x > 8) {
+  print("B")
+} else {
+  print("C")
+}
+
+# R checks from top to bottom and stops at the first TRUE condition. x > 5 is TRUE, so "A" prints and the other branches are skipped, even though x > 8 is also TRUE.
+
+```
+
+**Question #5**
+
+What is the difference between if and ifelse()? When would you choose each one?
+
+if works on one value, while ifelse() works on a whole vector. Use if for single decisions and ifelse() for columns.
+
+
+**Part C: Importing the CSV File**
+
+**Question #6**
+
+**a**
+```{r}
+student_grades <- "students_grades.csv"
+```
+**b**
+```{r}
+if (file.exists(student_grades)) {
+  grades <- read.csv(student_grades, stringsAsFactors = FALSE)
+  print("File imported successfully.")
+} else {
+  stop("File not found. Current folder: ", getwd())
+}
+```
+**c**
+```{r}
+head(grades)
+dim(grades)
+names(grades)
+str(grades)
+summary(grades)
+colSums(is.na(grades))
+
+```
+
+**d**
+
+1. How many rows and columns does grades have?
+
+15 rows and 7 columns.
+
+2. Which column contains missing values (NA), and how many?
+
+Midterm column has 1 NA, since the lesson says one student has a missing midterm.
+
+3. What is the data type of the Section column?
+
+character, because it holds text (A, B, C).
+
+```{r}
+range(grades$Attendance)   
+```
+
+4.What are the lowest and highest Attendance values?
+ 
+ 70 100
+
+**e**
+
+```{r}
+stopifnot(nrow(grades) == 15, ncol(grades) == 7, sum(is.na(grades)) == 1)
+
+```
+
+**f.1**
+
+```{r}
+grades$FinalGrade <- 0.30 * grades$Quiz + 0.30 * grades$Midterm + 0.40 * grades$Final
+grades$FinalGrade 
+
+```
+
+**f.2**
+
+```{r}
+grades$Result <- ifelse(is.na(grades$FinalGrade), "Incomplete",
+                 ifelse(grades$FinalGrade >= 75, "Passed", "Failed"))
+grades$Result 
+```
+
+**f.3**
+
+```{r}
+grades$Remarks <- ifelse(is.na(grades$FinalGrade), "Incomplete",
+                  ifelse(grades$FinalGrade >= 90, "Excellent",
+                  ifelse(grades$FinalGrade >= 85, "Very Good",
+                  ifelse(grades$FinalGrade >= 80, "Good",
+                  ifelse(grades$FinalGrade >= 75, "Fair", "Needs Improvement")))))
+grades$Remarks 
+```
+
+**f.4**
+
+```{r}
+grades$AttendanceFlag <- ifelse(grades$Attendance < 80, "At Risk", "OK")
+grades$AttendanceFlag 
+```
+
+**f.5** 
+
+```{r}
+grades$Honors <- ifelse(!is.na(grades$FinalGrade) &
+                        grades$FinalGrade >= 90 &
+                        grades$Attendance >= 90, "Yes", "No")
+grades$Honors 
+```
+
+**f.6**
+
+```{r}
+result_loop <- character(nrow(grades))
+
+for (i in 1:nrow(grades)) {
+  if (is.na(grades$FinalGrade[i])) {
+    result_loop[i] <- "Incomplete"
+  } else if (grades$FinalGrade[i] >= 75) {
+    result_loop[i] <- "Passed"
+  } else {
+    result_loop[i] <- "Failed"
+  }
+}
+result_loop
+```
+
+**f.7**
+
+```{r}
+# if (grades$FinalGrade >= 75) print("Passed")
+
+```
+grades$FinalGrade has 15 values, but if only accepts one TRUE or FALSE. I get, Error in if (grades$FinalGrade >= 75) print("Passed") : 
+  the condition has length > 1
+
+
+**f.8**
+
+```{r}
+table(grades$Result)
+sum(grades$Result == "Passed")
+sum(grades$AttendanceFlag == "At Risk")
+sum(grades$Honors == "Yes")
+```
+
+**f.9**
+
+```{r}
+stopifnot(ncol(grades) == 12)
+```
+
+
+**Part D: Exporting Results**
+
+**Question #7**
+
+```{r}
+#a 
+write.csv(grades, "students_grades_processed.csv", row.names = FALSE)
+
+#b
+at_risk <- grades[grades$AttendanceFlag == "At Risk", ]
+if (nrow(at_risk) > 0) {
+  write.csv(at_risk, "at_risk_students.csv", row.names = FALSE)
+} else {
+  print("No at-risk students.")
+}
+
+#c 
+honors <- grades[grades$Honors == "Yes",
+                 c("StudentID", "Name", "Section", "FinalGrade", "Attendance")]
+if (nrow(honors) > 0) {
+  write.csv(honors, "honors_list.csv", row.names = FALSE)
+} else {
+  print("No honors candidates.")
+}
+
+#d
+check <- read.csv("students_grades_processed.csv")
+dim(check)                          
+head(check)
+all.equal(check$FinalGrade, grades$FinalGrade)
+```
+
+
+**Question #8**
+
+```{r}
+write.csv(grades, "temp_test.csv")
+head(read.csv("temp_test.csv"))
+```
+1. How does the missing midterm appear in the exported file?
+
+It shows up as NA in the file. Use na = "" if you want the cell left empty.
+
+2. What would the file look like without row.names = FALSE? Try it with a temporary file name and compare.
+
+Without row.names = FALSE, the file gets an extra numbering column, which shows up as X when read back.
+
+
+**Question #9**
+
+```{r}
+grades$Scholarship <- ifelse(is.na(grades$FinalGrade), "Pending",
+                      ifelse(grades$FinalGrade >= 95 & grades$Attendance >= 90, "Full",
+                      ifelse(grades$FinalGrade >= 85 & grades$Attendance >= 90, "Partial",
+                             "None")))
+```
+
+```{r}
+qualified <- grades[grades$Scholarship %in% c("Full", "Partial"), ]
+
+```
+
+```{r}
+if (nrow(qualified) > 0) {
+  write.csv(qualified, "scholarship_candidates.csv", row.names = FALSE)
+} else {
+  print("No scholarship candidates.")
+}
+qualified 
+```
+
+```{r}
+table(grades$Scholarship)
+```
+
+**Question #10**
+
+```{r}
+# 1. Comparing anything with NA gives NA, and if() can't decide on NA. Checking is.na() first avoids the error.
+
+# 2. The student with a missing grade would get NA instead of "Incomplete". Incomplete must come first so the NA is caught before any comparison.
+
+# 3. Use ifelse() to fill a whole column. Use if ... else for a single decision, like checking whether a file exists.
+
+# 4. It shows the file was saved correctly: right rows and columns, no extra numbering column, and NA saved as expected.
+
+```
+
+
+
