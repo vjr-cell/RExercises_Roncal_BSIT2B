@@ -1,0 +1,169 @@
+---
+title: 'R Lab: The apply Family at Glance apply(), lapply(), sapply(), mapply(), and
+  tapply()'
+author: "Vanessa Roncal"
+date: "2026-11-26"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+**Part A — Predict the Output**
+
+**Question #1**
+
+```{r}
+m <- matrix(1:6, nrow = 2)
+m
+
+#a) 
+apply(m, 1, sum)
+#b) 
+apply(m, 2, sum)
+#c) 
+class(lapply(1:3, function(i) i^2))
+#d) 
+sapply(1:3, function(i) i^2)
+#e) 
+sapply(c('a', 'bb', 'ccc'), nchar)
+#f) 
+mapply(function(x, y) x * y, 1:3, 4:6)
+#g) 
+tapply(c(10, 20, 30, 40), c('u', 'v', 'u', 'v'), sum)
+```
+
+**Answer#1:**
+
+a) apply(m, 1, sum) gives [1] 9 12.
+The 1 means "by row". Row 1 is 1+3+5 = 9 and row 2 is 2+4+6 = 12.
+
+b) apply(m, 2, sum) gives [1] 3 7 11.
+The 2 means "by column". The columns sum to 1+2, 3+4 and 5+6.
+
+c) class(lapply(1:3, function(i) i^2)) gives [1] "list".
+lapply() always returns a list, no matter what the function returns.
+
+d) sapply(1:3, function(i) i^2) gives [1] 1 4 9.
+sapply() simplifies the results into a numeric vector.
+
+e) sapply(c('a', 'bb', 'ccc'), nchar) gives   a  bb ccc 
+  1   2   3
+It returns the number of characters in each string. Because the input is a character vector, sapply() uses it as names for the result.
+
+f) mapply(function(x, y) x * y, 1:3, 4:6) gives [1] 4 10 18.
+mapply() walks through both vectors in parallel, so it computes 1×4, 2×5 and 3×6.
+
+g) tapply(c(10, 20, 30, 40), c('u', 'v', 'u', 'v'), sum) gives
+
+ u  v 
+40 60
+
+It groups the values by label and sums each group. Group u is 10+30 and group v is 20+40.
+
+
+**Question #2**
+
+```{r}
+#b
+scores <- matrix(c(70, 85, 90,
+                   60, 75, 80,
+                   88, 92, 79),
+                 nrow = 3, byrow = TRUE,
+                 dimnames = list(c('Ana', 'Ben', 'Cara'), c('Math', 'Sci', 'Eng')))
+ 
+temps <- list(Mon = c(30, 32, 31), Tue = c(29, 33), Wed = c(31, 34, 35, 30))
+
+```
+
+```{r}
+#b.1
+#a student averages  
+apply(scores, 1, mean)   
+#b subject highest scores 
+apply(scores, 2, max) 
+#c best subject per student
+apply(scores, 1, function(row) names(which.max(row))) 
+
+```
+
+```{r}
+#b.2
+lapply(temps, mean)                       
+sapply(temps, length)                    
+vapply(temps, range, FUN.VALUE = numeric(2))  
+
+```
+
+range() returns 2 values for each day (the min and the max). When every result has the same length greater than 1, sapply() and vapply() stack them as columns. This gives a 2 × 3 matrix, with one column per day, the first row as the minimum and the second row as the maximum. vapply() also checks that each result really is numeric(2).
+
+**Question #3**
+```{r}
+p <- c(1000, 2000)
+r <- c(0.05, 0.04)
+n <- c(2, 3)
+
+mapply(function(p, r, n) p * (1 + r)^n, p, r, n)
+mapply(function(p, n, r) p * (1 + r)^n, p, n, MoreArgs = list(r = 0.045))
+```
+
+**Question #4**
+```{r}
+#a 
+tapply(iris$Sepal.Length, iris$Species, mean)
+
+#b 
+table(mtcars$cyl, mtcars$am)
+
+#c 
+tapply(mtcars$mpg, mtcars$cyl, mean, na.rm = TRUE)
+
+```
+
+**Part A — Debugging**
+
+**Question #5:**
+**a**
+```{r}
+# wrong sapply(list(a = 1:3, b = 4:6), mean())  
+sapply(list(a = 1:3, b = 4:6), mean)     
+```
+mean() with parentheses calls the function immediately with no arguments, which gives an error. 
+
+**b**
+```{r}
+# wrong apply(matrix(1:6, nrow = 3), 1, mean)   
+apply(matrix(1:6, nrow = 3), 2, mean)    
+```
+
+Margin 1 works by row (3 rows, so 3 values). You need margin 2 to get one mean per column.
+
+**c**
+```{r}
+df <- data.frame(n = c(1, 2), s = c('a', 'b'))
+# wrong apply(df, 2, class)
+sapply(df, class)
+```
+
+apply() first converts the data frame to a matrix, which can hold only one type, so everything becomes character. 
+
+
+**Question #6**
+
+**a**
+
+lapply() always returns a list. sapply() is the same, but it simplifies the result into a vector or matrix when it can, so the output type can vary. I'd use vapply() when I want a guaranteed type and length, since it gives an error if the results don't match what I declared.
+
+**b**
+```{r}
+x <- c(10, 20, 30, 40)
+g <- c('u', 'v', 'u', 'v')
+
+tapply(x, g, mean)
+
+```
+
+tapply(x, g, mean) returns one mean per group, labeled by group name. The lapply(split(...)) way returns a list.
